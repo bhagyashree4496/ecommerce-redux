@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import Main from "./components/main/Main";
+import HomeTemplate from "./routerTemplates/HomeTemplate";
+import ProductDetail from "./components/productPage/ProductDetail";
+import Favorites from "./components/Favorites/Favorites";
+import Cart from "./components/Cart/Cart";
+import { useDispatch } from "react-redux";
+import { setProducts } from "./redux/productSlice";
+import { Route, BrowserRouter, Routes } from "react-router-dom";
 
-function App() {
+export default function () {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    fetch("https://fakestoreapi.com/products")
+      .then((res) => res.json())
+      .then((json) => {
+        dispatch(setProducts(json));
+      });
+  });
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<HomeTemplate></HomeTemplate>}>
+            <Route index element={<Main />}></Route>
+            <Route path=":id" element={<ProductDetail />}></Route>
+            <Route path="Favorites" element={<Favorites />}></Route>
+            <Route path="Cart" element={<Cart />}></Route>
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 }
-
-export default App;
